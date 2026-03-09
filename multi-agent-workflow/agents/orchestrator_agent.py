@@ -28,8 +28,16 @@ def _build_agent_tools():
     explainer = ExplainerAgent()
     learner = LearnerAgent()
 
+    def _call_explainer(message: str) -> str:
+        logger.info("Calling subagent: explainer")
+        return explainer.run(message)
+
+    def _call_learner(message: str) -> str:
+        logger.info("Calling subagent: learner")
+        return learner.run(message)
+
     explainer_tool = StructuredTool.from_function(
-        func=lambda message: explainer.run(message),
+        func=_call_explainer,
         name="explainer",
         description=(
             "Use this tool when the user wants a concept explained simply — "
@@ -40,7 +48,7 @@ def _build_agent_tools():
     )
 
     learner_tool = StructuredTool.from_function(
-        func=lambda message: learner.run(message),
+        func=_call_learner,
         name="learner",
         description=(
             "Use this tool when the user wants in-depth study material, "
