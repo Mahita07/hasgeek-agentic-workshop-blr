@@ -62,6 +62,46 @@ python main.py "Explain recursion simply"
 
 ---
 
+## Running Notion MCP Server
+
+To use the Notion MCP integration, follow these steps:
+
+**1. Get your Notion token**
+
+Obtain your Notion API token from [Notion Integrations](https://www.notion.so/profile/integrations/internal).
+
+**2. Run the Notion MCP server (Terminal 1)**
+
+In one terminal, start the Notion MCP server:
+```bash
+NOTION_TOKEN="your_notion_token" npx @notionhq/notion-mcp-server \
+  --transport http \
+  --port 3000 \
+  --auth-token "mysecret123"
+```
+Replace `your_notion_token` with your actual Notion token. You can use any auth token of your choice (e.g., `"mysecret123"`).
+
+**3. Configure environment variables**
+
+In your `.env` file, ensure all values are set and the auth token matches the one used when starting the server:
+```bash
+MCP_AUTH_TOKEN=mysecret123  # Must match the --auth-token used above
+```
+
+Inside notion application, create a page and in its connections, add the connection to the notion mcp server.
+Add the parent page id in the .env file.
+```bash
+PARENT_PAGE_ID=your_parent_page_id
+```
+**4. Run the application (Terminal 2)**
+
+In another terminal, run the application:
+```bash
+python main.py
+```
+
+---
+
 ## How it works
 
 1. User sends a message.
