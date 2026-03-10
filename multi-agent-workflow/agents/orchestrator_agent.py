@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field
 
 from agents.explainer_agent import ExplainerAgent
 from agents.learner_agent import LearnerAgent
-
+from tools.save_to_notion import save_notes_to_notion
 logger = structlog.get_logger(__name__)
 
 class AgentToolInput(BaseModel):
@@ -29,11 +29,11 @@ def _build_agent_tools():
     learner = LearnerAgent()
 
     def _call_explainer(message: str) -> str:
-        logger.info("Calling subagent: explainer")
+        logger.info("Calling agent: explainer")
         return explainer.run(message)
 
     def _call_learner(message: str) -> str:
-        logger.info("Calling subagent: learner")
+        logger.info("Calling agent: learner")
         return learner.run(message)
 
     explainer_tool = StructuredTool.from_function(
@@ -57,8 +57,7 @@ def _build_agent_tools():
         ),
         args_schema=AgentToolInput,
     )
-
-    return [explainer_tool, learner_tool]
+    return [explainer_tool, learner_tool, save_notes_to_notion]
 
 ORCHESTRATOR_PROMPT = """
 You are the ORCHESTRATOR of an AI Learning System.
@@ -85,6 +84,13 @@ AVAILABLE TOOL AGENTS:
    - Provides 16-mark style answers  
    - Includes diagrams (described), bullet points, definitions, and key points  
    - Prepares student for competitive or university exams  
+   
+AVAILABLE TOOL 
+save_notes_to_notion — Saves the generated study notes to a Notion page.
+- Writes notes to Notion
+- Takes title and content as parameters
+
+
 
 DECISION RULES:
 
@@ -93,6 +99,7 @@ If the student:
 - Mentions exams, 16 marks, important questions, university, competitive exams, notes, revision, or deep understanding → delegate to learner_agent
 - If unclear → ask:  
   "Would you like a simple explanation or an exam-focused detailed answer?"
+- Use the save_notes_to_notion to write the notes to Notion when the user mentions that they want the notes to be written or stored
 
 CONVERSATION FLOW:
 
@@ -103,6 +110,9 @@ CONVERSATION FLOW:
 2. After user response:
    - Identify intent.
    - Delegate immediately to the correct agent.
+   
+3. Tool usage: 
+    - Use the save_to_notion tool if the user has mentioned that the notes have to be saved or written 
 
 3. Follow-ups:
    - Maintain topic continuity.
