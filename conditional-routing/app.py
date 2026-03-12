@@ -43,7 +43,7 @@ def medium_energy_node(state: EnergyState):
     return state
 
 def high_energy_node(state: EnergyState):
-    state["response"] = "High energy! That's awesome! You should definitely go for a run, hit the gym, or play a sport 🏃‍♂️⚽🔥"
+    state["response"] = "High energy! That's awesome! You should definitely go for a run, hit the gym, or play a sport or maybe attend a Hasgeek workshop!!! 🏃‍♂️⚽🔥"
     return state
 
 def route_energy(state: EnergyState):
