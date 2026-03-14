@@ -50,14 +50,3 @@ async def create_page(title: str, content: str):
                 }
             )
             return result
-
-
-# async def main():
-#     result = await create_page(
-#         title="LangGraph Workshop Notes",
-#         content="This page was created using MCP."
-#     )
-#     print(result)
-
-
-# asyncio.run(main())
